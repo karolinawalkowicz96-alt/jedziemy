@@ -33,17 +33,15 @@ npm run build
 - Statyczny HTML landing page w buildzie, metadata, manifest, robots, generator canonical/sitemap, OG/X.
 - Error boundary, komunikat offline, fallback bez WebGL oraz szablony 404/500/maintenance.
 
-## SEO przed publikacją
+## Domena i SEO
 
-Nie podano domeny. Domyślny build ma noindex, blokadę robots i pusty sitemap; nie zawiera wymyślonego canonical.
+Domena produkcyjna: https://koleczko.vercel.app/.
+Zwykłe `npm run build` generuje indeksowalną wersję z canonical, sitemap, absolutnymi adresami OG/X i schema WebSite dla tej domeny. `SITE_URL` może nadpisać domenę. Build z `VERCEL_ENV=preview` pozostaje noindex, chyba że jawnie ustawisz SITE_URL.
 
-```sh
-SITE_URL=https://twoja-domena.pl npm run build
-```
+W Vercel użyj komendy budowania `npm run build` i katalogu wynikowego `release`.
+Aktualizacja tej paczki nie publikuje zmian na Vercel — wymagane jest wdrożenie nowej wersji projektu.
 
-PowerShell: ustaw `$env:SITE_URL="https://twoja-domena.pl"`, następnie `npm run build`.
-
-Generator włącza indeksowanie, dodaje canonical, absolutne adresy social, sitemap i schema WebSite. Hosting musi sam mapować 404.html na status 404, 500.html na błąd serwera i maintenance.html na przerwę. Same pliki nie konfigurują serwera. Manifest nie oznacza pełnego trybu offline: brak service workera.
+Hosting musi mapować 404.html na status 404, 500.html na błąd serwera i maintenance.html na przerwę. Manifest nie oznacza pełnego trybu offline: brak service workera.
 
 ## Testy i ograniczenia
 

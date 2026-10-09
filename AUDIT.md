@@ -20,6 +20,6 @@ Tło WebP ~119 KB zamiast ~2,1 MB. Główny JS ~112 KB gzip, osobny chunk Three.
 
 ## 4. SEO i dostępność
 
-Prerender treści HTML z jednym h1 i FAQ. Opis wirtualnej waluty, manifest, favicon, Apple icon, OG/X, robots i sitemap. SITE_URL generuje canonical i schema WebSite, bez fikcyjnych ocen. Bez domeny build ma noindex. Natywne dialogi, etykiety, focus i symbole wyników poza kolorem.
+Prerender treści HTML z jednym h1 i FAQ. Opis wirtualnej waluty, manifest, favicon, Apple icon, OG/X, robots i sitemap. SITE_URL generuje canonical i schema WebSite, bez fikcyjnych ocen. Domena produkcyjna to https://koleczko.vercel.app/; zwykły build umożliwia indeksowanie, a build Vercel preview pozostaje noindex. Natywne dialogi, etykiety, focus i symbole wyników poza kolorem.
 
 **Nieweryfikowane:** kontrast wszystkich stanów, czytnik ekranu, indeksowanie domeny i podglądy linków. Statusy 404/500/503 wymagają konfiguracji hostingu. Ranking i profil są lokalne; nie dodano fikcyjnego backendu ani sztucznych stanów ładowania sieci.
