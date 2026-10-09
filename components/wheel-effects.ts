@@ -1,13 +1,4 @@
 import * as THREE from 'three';
-export const EVOLUTIONS = [
- {amount:10,name:'Iskra',color:'#548bff',detail:'Neonowy rdzeń'},
- {amount:20,name:'Puls',color:'#28c8ff',detail:'Pierwsza orbita'},
- {amount:40,name:'Kryształ',color:'#ab78ff',detail:'Lewitujące kryształy'},
- {amount:80,name:'Plazma',color:'#fc5bcc',detail:'Wyładowania energii'},
- {amount:160,name:'Inferno',color:'#ff9438',detail:'Ognista obręcz'},
- {amount:320,name:'Supernova',color:'#ffe29c',detail:'Korona i złota materia'},
-] as const;
-export const evolutionFor=(amount:number)=>Math.min(5, Math.max(0, Math.floor(Math.log2(Math.max(10,amount)/10))));
 export function createWheelEffects(scene:THREE.Scene){
  const root=new THREE.Group();scene.add(root);
  const orbitGroup=new THREE.Group();root.add(orbitGroup);
@@ -19,7 +10,8 @@ export function createWheelEffects(scene:THREE.Scene){
  }
  const crystalGeo=new THREE.OctahedronGeometry(.11,0),crystalMat=new THREE.MeshStandardMaterial({color:0x7362cb,metalness:.8,roughness:.14,emissive:0x502398,emissiveIntensity:.65});
  const crystals=new THREE.InstancedMesh(crystalGeo,crystalMat,36);root.add(crystals);const dummy=new THREE.Object3D();
- const sparkCount=720,sparkPositions=new Float32Array(sparkCount*3),sparkColors=new Float32Array(sparkCount*3);const colors=[new THREE.Color('#268cff'),new THREE.Color('#fb4589'),new THREE.Color('#fff3a0')];for(let i=0;i<sparkCount;i++){const c=colors[i%3];sparkColors.set([c.r,c.g,c.b],i*3)}
+ const mobile=window.innerWidth<800;
+ const sparkCount=mobile?220:720,sparkPositions=new Float32Array(sparkCount*3),sparkColors=new Float32Array(sparkCount*3);const colors=[new THREE.Color('#268cff'),new THREE.Color('#fb4589'),new THREE.Color('#fff3a0')];for(let i=0;i<sparkCount;i++){const c=colors[i%3];sparkColors.set([c.r,c.g,c.b],i*3)}
  const sparksGeo=new THREE.BufferGeometry();sparksGeo.setAttribute('position',new THREE.BufferAttribute(sparkPositions,3));sparksGeo.setAttribute('color',new THREE.BufferAttribute(sparkColors,3));
  const sparksMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true,uniforms:{size:{value:1}},vertexShader:'varying vec3 vColor; uniform float size; void main(){vColor=color;vec4 p=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*p;gl_PointSize=clamp(size*28./-p.z,1.,10.);}',fragmentShader:'varying vec3 vColor;void main(){float d=length(gl_PointCoord-.5)*2.;float a=pow(max(0.,1.-d),2.);gl_FragColor=vec4(vColor*2.,a);}' });
  const sparks=new THREE.Points(sparksGeo,sparksMat);root.add(sparks);
@@ -39,15 +31,15 @@ export function createWheelEffects(scene:THREE.Scene){
   const seconds=reduced?0:t*.001;
   if(level!==previousLevel){pulse=t;previousLevel=level}if(won&&!previousWon){burst=t;pulse=t}previousWon=won;
   rings.forEach((ring,i)=>{ring.visible=level>=i+1;ring.rotation.z=seconds*(i%2?-.13:.18)*(spinning?2.5:1)+i;const m=ring.material as THREE.MeshBasicMaterial;m.color.set(level>=4?(i%2?'#ff9c2c':'#ffd680'):(i%2?'#e42baf':'#408aff')).multiplyScalar(1.6);});
-  crystals.count=level<2?0:Math.min(36,8+(level-2)*8);crystalMat.emissive.set(level>=4?'#974106':'#512eb0');crystalMat.color.set(level>=4?'#d8a346':'#7165bd');
+  crystals.count=level<2?0:Math.min(mobile?12:36,8+(level-2)*8);crystalMat.emissive.set(level>=4?'#974106':'#512eb0');crystalMat.color.set(level>=4?'#d8a346':'#7165bd');
   for(let i=0;i<crystals.count;i++){const a=i*2.399+seconds*.06*(i%2?1:-1),r=2.24+(i%4)*.085;dummy.position.set(Math.cos(a)*r,Math.sin(a)*r,Math.sin(a*2)*.18);dummy.rotation.set(i+seconds*.2,i*.7+seconds*.16,i);dummy.scale.setScalar(.6+(i%3)*.3);dummy.updateMatrix();crystals.setMatrixAt(i,dummy.matrix)}crystals.instanceMatrix.needsUpdate=true;
   sparksGeo.setDrawRange(0,Math.min(sparkCount,80+level*110));sparksMat.uniforms.size.value=level>=4?1.3:.7;
-  for(let i=0;i<80+level*110;i++){const a=i*2.399+seconds*(.07+level*.015),life=((seconds*.24+i*.037)%1),winBurst=won&&!reduced?Math.max(0,1-(t-burst)/2100):0,r=2.02+life*(.35+level*.12)+winBurst*life*1.6;sparkPositions[i*3]=Math.cos(a)*r;sparkPositions[i*3+1]=Math.sin(a)*r+(level>=4?life*.28:0);sparkPositions[i*3+2]=Math.sin(i*4.1)*.6;const c=level>=4?color.setHSL(.08+(i%5)*.014,1,.62):colors[i%2];sparkColors.set([c.r,c.g,c.b],i*3)}sparksGeo.attributes.position.needsUpdate=true;sparksGeo.attributes.color.needsUpdate=true;
-  flame.visible=level>=4||won;flameMat.uniforms.time.value=seconds;flameMat.uniforms.power.value=won?.9:level===5?1:.6;flameMat.uniforms.gold.value=level===5||won?1:0;
+  for(let i=0;i<Math.min(sparkCount,80+level*110);i++){const a=i*2.399+seconds*(.07+level*.015),life=((seconds*.24+i*.037)%1),winBurst=won&&!reduced?Math.max(0,1-(t-burst)/2100):0,r=2.02+life*(.35+level*.12)+winBurst*life*1.6;sparkPositions[i*3]=Math.cos(a)*r;sparkPositions[i*3+1]=Math.sin(a)*r+(level>=4?life*.28:0);sparkPositions[i*3+2]=Math.sin(i*4.1)*.6;const c=level>=4?color.setHSL(.08+(i%5)*.014,1,.62):colors[i%2];sparkColors.set([c.r,c.g,c.b],i*3)}sparksGeo.attributes.position.needsUpdate=true;sparksGeo.attributes.color.needsUpdate=true;
+  flame.visible=level>=4||won;flameMat.uniforms.time.value=seconds;flameMat.uniforms.power.value=won?.9:level>=5?1:.6;flameMat.uniforms.gold.value=level>=5||won?1:0;
   bolts.forEach((line,b)=>{line.visible=level>=3;const pos=line.geometry.attributes.position as THREE.BufferAttribute;for(let j=0;j<28;j++){const a=b*Math.PI/3+j*.022+seconds*.1,r=2.12+Math.sin(j*4.7+Math.floor(seconds*9)+b)*.055;pos.setXYZ(j,Math.cos(a)*r,Math.sin(a)*r,.22)}pos.needsUpdate=true;(line.material as THREE.LineBasicMaterial).opacity=reduced?.4:.25+Math.sin(seconds*5+b)*.2;});
-  crown.visible=level===5;crown.rotation.y=reduced?0:Math.sin(seconds*.8)*.15;
+  crown.visible=level>=5;crown.rotation.y=reduced?0:Math.sin(seconds*.8)*.15;
   const celebrationAge=(t-burst)/1000;victoryCoins.visible=won&&!reduced&&celebrationAge<2.8;
-  if(victoryCoins.visible){victoryCoins.count=12+level*4;for(let i=0;i<victoryCoins.count;i++){const a=i*2.399,speed=1.15+(i%5)*.18,age=celebrationAge;dummy.position.set(Math.cos(a)*speed*age,Math.sin(a)*speed*age+1.1*age-.65*age*age,.6+Math.sin(i)*age*.3);dummy.rotation.set(age*3+i,age*2+i,age);dummy.scale.setScalar(1.1+(i%3)*.4);dummy.updateMatrix();victoryCoins.setMatrixAt(i,dummy.matrix)}victoryCoins.instanceMatrix.needsUpdate=true;}
+  if(victoryCoins.visible){victoryCoins.count=Math.min(32,12+level*4);for(let i=0;i<victoryCoins.count;i++){const a=i*2.399,speed=1.15+(i%5)*.18,age=celebrationAge;dummy.position.set(Math.cos(a)*speed*age,Math.sin(a)*speed*age+1.1*age-.65*age*age,.6+Math.sin(i)*age*.3);dummy.rotation.set(age*3+i,age*2+i,age);dummy.scale.setScalar(1.1+(i%3)*.4);dummy.updateMatrix();victoryCoins.setMatrixAt(i,dummy.matrix)}victoryCoins.instanceMatrix.needsUpdate=true;}
   const age=(t-pulse)/1300;shock.visible=!reduced&&age>=0&&age<1;shock.scale.setScalar(1+age*.42);(shock.material as THREE.MeshBasicMaterial).opacity=Math.max(0,.8*(1-age));
  },dispose(){scene.remove(root);root.traverse(o=>{if(o instanceof THREE.Mesh||o instanceof THREE.Line||o instanceof THREE.Points){o.geometry.dispose();const ms=Array.isArray(o.material)?o.material:[o.material];ms.forEach(m=>m.dispose())}})}}
 }

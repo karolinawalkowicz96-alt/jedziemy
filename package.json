@@ -8,8 +8,10 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "build": "node scripts/seo.mjs && tsc --noEmit && vite build && node scripts/prerender.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "test:e2e": "playwright test",
+    "assets": "node scripts/assets.cjs"
   },
   "dependencies": {
     "react": "19.2.6",
@@ -27,6 +29,8 @@
     "@types/three": "0.186.0",
     "@types/node": "22.19.19",
     "tailwindcss": "4.2.1",
-    "@tailwindcss/postcss": "4.2.1"
+    "@tailwindcss/postcss": "4.2.1",
+    "sharp": "0.35.5",
+    "@playwright/test": "1.64.0"
   }
 }
