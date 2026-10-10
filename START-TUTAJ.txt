@@ -1,0 +1,46 @@
+KÓŁECZKO — KOMPLET PLIKÓW
+Wersja: 10.10.2026, commit 48fc1fc7a33f548ffd803c7106ca349b6a11341e
+
+Paczka zawiera aktualny kod źródłowy opublikowanej aplikacji, grafiki,
+style, testy, raport audytu oraz zrzuty desktop/mobile.
+Nie zawiera node_modules, pamięci podręcznej ani danych logowania.
+
+URUCHOMIENIE LOKALNE
+1. Rozpakuj cały ZIP.
+2. Zainstaluj Node.js w wersji co najmniej 22.13.
+3. Otwórz terminal w folderze Koleczko.
+4. Wykonaj kolejno:
+   npm install -g pnpm@11.25.0
+   pnpm install --frozen-lockfile
+   pnpm dev --host 127.0.0.1
+5. Otwórz adres wyświetlony w terminalu (zwykle http://localhost:5173).
+
+Nie uruchamiaj aplikacji dwuklikiem w index.html — wymaga serwera.
+Plik pnpm-lock.yaml i pnpm-workspace.yaml należy zachować.
+
+ZAWARTOŚĆ
+app/ — ekran aplikacji, układ i style
+components/Wheel.tsx — koło Three.js
+components/WheelFallback.tsx — tryb zgodności bez WebGL
+public/ — zasoby graficzne
+lib/game.ts — niezmienione zasady i rozliczanie rund
+lib/visuals.ts — intensywność oprawy i animacja
+qa/VISUAL_AUDIT.md — raport weryfikacji
+qa/evidence/ — zrzuty ekranów i porównania
+preview.tsx, preview.vite.ts — lokalny podgląd
+vite.config.ts, build/, scripts/ — istniejąca konfiguracja Vinext/Sites
+
+TESTY
+node node_modules/typescript/bin/tsc --noEmit
+node tests/game.test.mjs
+node tests/visuals.test.mjs
+
+UWAGI
+To projekt źródłowy React/TypeScript, nie gotowy statyczny eksport do FTP.
+Istniejąca konfiguracja publikacji jest przeznaczona dla Vinext/Sites.
+Lokalny podgląd nie wymaga logowania ChatGPT.
+Adresy ?qa=win, ?qa=loss, ?qa=high służą wyłącznie do audytu lokalnego;
+nadpisują lokalny stan demonstracyjny przeglądarki. Do zwykłej gry używaj /.
+Aplikacja używa wirtualnych punktów, a stan zapisuje lokalnie.
+Tryb WebGL i 60 FPS na rzeczywistym GPU nie zostały zweryfikowane
+w przeglądarce testowej; raport zawiera pełny opis ograniczeń.

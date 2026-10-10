@@ -1,7 +1,0 @@
-import {useId} from 'react';
-type Props={size?:number;className?:string};
-function Icon({size=24,className,kind}:{size?:number;className?:string;kind:string}){const id=useId();return <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true"><defs><linearGradient id={id} x1="4" y1="2" x2="26" y2="30" gradientUnits="userSpaceOnUse"><stop stopColor="#fff2bc"/><stop offset=".4" stopColor="#e9b454"/><stop offset=".7" stopColor="#986022"/><stop offset="1" stopColor="#f5cf7d"/></linearGradient></defs><g fill={`url(#${id})`} stroke="#ffe1a0" strokeWidth=".7">{kind==='coin'?<><ellipse cx="16" cy="18" rx="12" ry="12" fill="#704716"/><circle cx="16" cy="15" r="12"/><circle cx="16" cy="15" r="8.5" fill="#a56b27"/><path d="M11 12l3 2 2-5 2 5 3-2-2 7h-6z"/></>:kind==='skull'?<path fill="currentColor" stroke="none" fillRule="evenodd" d="M16 3C5 3 2 16 8 21v7h5v-4h2v4h3v-4h2v4h4v-7C31 15 26 3 16 3ZM8 14a4 4 0 108 0 4 4 0 00-8 0Zm10 0a4 4 0 108 0 4 4 0 00-8 0Zm-2 4-2 4h4z"/>:kind==='flame'?<path d="M17 2c3 9-1 10 5 15 2-2 3-4 3-6 9 16-5 23-14 17C0 22 7 12 12 8c-2 7 0 9 2 9 4-4 0-9 3-15Z"/>:<path d="M4 8l7 5 5-9 5 9 7-5-4 17H8zM9 28h14"/>}</g></svg>}
-export const BrandIcon=(p:Props)=><Icon {...p} kind="coin"/>;
-export const SkullIcon=(p:Props)=><Icon {...p} kind="skull"/>;
-export const CrownIcon=(p:Props)=><Icon {...p} kind="crown"/>;
-export const FlameIcon=(p:Props)=><Icon {...p} kind="flame"/>;

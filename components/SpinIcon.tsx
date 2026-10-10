@@ -1,0 +1,2 @@
+/** Two opposing sweeps echo the two halves of the wheel. */
+export default function SpinIcon({size=24,className=''}:{size?:number;className?:string}){return <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 10A8.8 8.8 0 0 1 19 6.5M20.5 14A8.8 8.8 0 0 1 5 17.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="m15.5 6.8 4.1.9.5-4.2M8.5 17.2l-4.1-.9-.5 4.2" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>}
