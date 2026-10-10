@@ -1,5 +1,6 @@
+import type {Progress} from './progression';
 export type Entry = {id:string; kind:'win'|'loss'|'cash'; amount:number; time:string};
-export type Game = {balance:number; pot:number; base:number; streak:number; phase:'ready'|'win'|'loss'|'cash'; history:Entry[]; best:number; name:string};
+export type Game = {progress?:Progress;balance:number; pot:number; base:number; streak:number; phase:'ready'|'win'|'loss'|'cash'; history:Entry[]; best:number; name:string};
 export const initial:Game={balance:1250,pot:0,base:10,streak:0,phase:'ready',history:[],best:0,name:'Gracz'};
 export function resolve(g:Game,stake:number,win:boolean):Game {
  const continuation=g.phase==='win'; const risk=continuation?g.pot:stake;

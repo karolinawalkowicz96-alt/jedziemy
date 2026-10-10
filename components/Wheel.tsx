@@ -1,10 +1,11 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import * as THREE from 'three';
+import EvolutionFX from './EvolutionFX';
 import WheelFallback from './WheelFallback';
 import {spinProgress} from '../lib/visuals';
 export type Spin={id:number;win:boolean;duration:number};
-export default function Wheel({spin,hero=false,onDone,intensity=.15,winning=false}:{spin:Spin|null;hero?:boolean;onDone:()=>void;intensity?:number;winning?:boolean}){
+export default function Wheel({spin,hero=false,onDone,intensity=.15,winning=false,evolution=0,boosted=false,skin='neon'}:{spin:Spin|null;hero?:boolean;onDone:()=>void;intensity?:number;winning?:boolean;evolution?:number;boosted?:boolean;skin?:string}){
  const mount=useRef<HTMLDivElement>(null), action=useRef<{spin:Spin|null;onDone:()=>void}>({spin,onDone});action.current={spin,onDone};const [failed,setFailed]=useState(false);const energy=useRef({intensity,winning});energy.current={intensity,winning};
  useEffect(()=>{if(!mount.current)return;const el=mount.current;let renderer:THREE.WebGLRenderer;try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}catch{setFailed(true);return;}
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setClearColor(0,0);el.appendChild(renderer.domElement);const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.1,100);camera.position.set(0,.65,9.8);camera.lookAt(0,0,0);
@@ -69,5 +70,5 @@ export default function Wheel({spin,hero=false,onDone,intensity=.15,winning=fals
  else if(!s&&lastId===0){wheel.rotation.z=hero?-.10:0;}rig.position.y=0;renderer.render(scene,camera);}
  frame=requestAnimationFrame(tick);return()=>{cancelAnimationFrame(frame);ro.disconnect();scene.traverse(o=>{if(o instanceof THREE.Mesh){o.geometry.dispose();const materials=Array.isArray(o.material)?o.material:[o.material];materials.forEach(m=>m.dispose());}});tex.dispose();env.dispose();haloTex.dispose();pg.dispose();particleMat.dispose();trailGeo.dispose();trailMat.dispose();renderer.dispose();el.replaceChildren();};
  },[hero]);
- return <div className={'wheel-stage '+(hero?'hero-wheel':'')} style={{'--energy':Math.min(intensity,1)} as React.CSSProperties}><div className="wheel-aura"/><div ref={mount} className="three-canvas" role="img" aria-label="Koło 3D: niebieska połowa podwaja stawkę, czerwona oznacza utratę stawki"/>{failed&&<WheelFallback spin={spin} onDone={onDone} intensity={intensity} hero={hero} winning={winning}/>}<div className="floor-light"/></div>;
+ return <div className={'wheel-stage '+(hero?'hero-wheel':'')} style={{'--energy':Math.min(intensity,1)} as React.CSSProperties}><div className="wheel-aura"/><div ref={mount} className="three-canvas" role="img" aria-label="Koło 3D: niebieska połowa podwaja stawkę, czerwona oznacza utratę stawki"/>{failed&&<WheelFallback spin={spin} onDone={onDone} intensity={intensity} hero={hero} winning={winning}/>}<EvolutionFX stage={evolution} boosted={boosted} skin={skin}/><div className="floor-light"/></div>;
 }

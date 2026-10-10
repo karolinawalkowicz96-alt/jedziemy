@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {freshProgress,readProgress,roundProgress,boostReady,claimMission} from '../lib/progression.ts';
+import {initial,resolve,cashout} from '../lib/game.ts';
+let p={...freshProgress};
+assert.throws(()=>roundProgress(p,true,true));
+for(let i=0;i<5;i++)p=roundProgress(p,false,false);
+assert.equal(p.xp,100);assert.equal(p.energy,100);assert.equal(boostReady(p),true);
+p=roundProgress(p,true,true);assert.equal(p.xp,160);assert.equal(p.energy,0);assert.equal(p.boosts,1);
+assert.throws(()=>roundProgress(p,true,true));
+for(let i=0;i<4;i++)p=roundProgress(p,false,false);
+assert.equal(boostReady(p),true);
+const claimed=claimMission(p,'start');assert.equal(claimed.xp,p.xp+60);assert.deepEqual(claimMission(claimed,'start'),claimed);assert.deepEqual(claimMission(p,'collector'),p);
+assert.deepEqual(readProgress(JSON.parse(JSON.stringify(claimed))),claimed);
+assert.equal(readProgress({xp:-1,energy:1000,skin:'solar'}).skin,'neon');
+let g={...initial,progress:p};g={...resolve(g,10,true),progress:roundProgress(p,true,true)};
+const restored=JSON.parse(JSON.stringify(g));assert.equal(restored.progress.energy,0);assert.equal(restored.pot,20);
+assert.equal(cashout(restored).progress.xp,g.progress.xp);assert.equal(cashout(restored).balance,1260);
+console.log('PASS: migration, boost unlock/consume/recharge, one-time claims, atomic persistence and cashout');
